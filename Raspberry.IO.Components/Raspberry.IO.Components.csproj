@@ -94,6 +94,11 @@
     <Compile Include="Expanders\Pcf8574\Pcf8574Pin.cs" />
     <Compile Include="Expanders\Pcf8574\Pcf8574PinExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RTCs\Pcf8563\Pcf8563I2cConnection.cs" />
+    <Compile Include="RTCs\Pcf8563\Pcf8563InputBinaryPin.cs" />
+    <Compile Include="RTCs\Pcf8563\Pcf8563OutputBinaryPin.cs" />
+    <Compile Include="RTCs\Pcf8563\Pcf8563Pin.cs" />
+    <Compile Include="RTCs\Pcf8563\Pcf8563PinExtensionMethods.cs" />
     <Compile Include="Sensors\Distance\HcSr04\HcSr04Connection.cs" />
     <Compile Include="Sensors\Distance\HcSr04\Units.cs" />
     <Compile Include="Sensors\Pressure\Bmp085\Bmp085Data.cs" />
