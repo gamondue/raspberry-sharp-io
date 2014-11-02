@@ -19,14 +19,14 @@ namespace Test.I2C.PCF8563
             Console.WriteLine("PCF-8563 Sample: Read RTC");
             Console.WriteLine();
 
-            Console.WriteLine ("Program Started at:"+ DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+            Console.WriteLine ("Program Started at:"+ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             using (var driver = new I2cDriver(sdaPin.ToProcessor(), sclPin.ToProcessor()))
             {
                 var deviceConnection = new Pcf8563I2cConnection(driver.Connect(0x51));
 
                 while (!Console.KeyAvailable)
                 {
-                    Console.WriteLine(deviceConnection.RawRead().ToString()); 
+                    Console.WriteLine(deviceConnection.ReadSeconds().ToString()); 
                     Thread.Sleep(1000);
                 }
             }

@@ -45,6 +45,12 @@ namespace Raspberry.IO.Components.Rtcs.Pcf8563
             return DateTime.Now; 
         }
 
+        public int ReadSeconds()
+        {
+            byte[] rd = connection.Read(1); // (Register.REG_SECONDS); 
+            return bcd_to_int(rd[0]) & 0x7F; 
+        }
+
         public byte RawRead()
         {
             return connection.ReadByte(); 
@@ -66,8 +72,8 @@ namespace Raspberry.IO.Components.Rtcs.Pcf8563
 
         internal int bcd_to_int(int bcd)
         {
+            // Decode a 2x4bit BCD to a integer.
             int outN = bcd;
-            //// Decode a 2x4bit BCD to a integer.
             //int out = 0; 
             //for d in (bcd >> 4, bcd):
             //    for p in (1, 2, 4 ,8):
@@ -76,8 +82,51 @@ namespace Raspberry.IO.Components.Rtcs.Pcf8563
             //        d >>= 1
             //    out *= 10
             //return out / 10; 
-            return outN; 
+            int p = bcd & 0xFF; 
+            for (int i=0; i < 4; i++)
+            {
+                bcd >>= 4; 
+                p += bcd & 0xFF * 10; 
+            }
+            return p; 
         }
+
+                private byte ReadByte(byte address)
+        {
+            return ReadBytes(address, 1)[0];
+        }
+
+        private byte[] ReadBytes(byte address, int byteCount)
+        {
+            connection.WriteByte(address);
+            return connection.Read(byteCount);
+        }
+
+        private ushort ReadUInt16(byte address)
+        {
+            var bytes = ReadBytes(address, 2);
+            unchecked
+            {
+                return (ushort)((bytes[0] << 8) + bytes[1]);
+            }
+        }
+
+        private short ReadInt16(byte address)
+        {
+            var bytes = ReadBytes(address, 2);
+            unchecked
+            {
+                return (short)((bytes[0] << 8) + bytes[1]);
+            }
+        }
+
+        private void WriteByte(byte address, byte data)
+        {
+            connection.Write(address, data);
+        }
+
+        #endregion
+    }
 
         internal int int_to_bcd(int n)
         {
