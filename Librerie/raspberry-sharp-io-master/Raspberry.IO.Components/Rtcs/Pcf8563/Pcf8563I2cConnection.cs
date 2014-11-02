@@ -91,7 +91,7 @@ namespace Raspberry.IO.Components.Rtcs.Pcf8563
             return p; 
         }
 
-                private byte ReadByte(byte address)
+        private byte ReadByte(byte address)
         {
             return ReadBytes(address, 1)[0];
         }
@@ -124,9 +124,6 @@ namespace Raspberry.IO.Components.Rtcs.Pcf8563
         {
             connection.Write(address, data);
         }
-
-        #endregion
-    }
 
         internal int int_to_bcd(int n)
         {

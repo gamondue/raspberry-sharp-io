@@ -1,0 +1,5 @@
+uses device files exposed by the I2C kernel drivers in Arch Linux.
+
+The RPi.I2C.Net library requires a native-C library libnativei2c.so, which is a part of this project.
+
+It's precompiled for Arch Linux.

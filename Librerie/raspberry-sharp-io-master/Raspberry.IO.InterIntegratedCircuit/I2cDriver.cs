@@ -43,9 +43,9 @@ namespace Raspberry.IO.InterIntegratedCircuit
             this.sclPin = sclPin;
 
             var bscBase = GetBscBase(sdaPin, sclPin);
-            Console.WriteLine("Prima");
+            //Console.WriteLine("Prima");
             var memoryFile = Interop.open("/dev/mem", Interop.O_RDWR + Interop.O_SYNC);
-            Console.WriteLine("Dopo");
+            //Console.WriteLine("Dopo");
             try
             {
                 gpioAddress = Interop.mmap(IntPtr.Zero, Interop.BCM2835_BLOCK_SIZE, Interop.PROT_READ | Interop.PROT_WRITE, Interop.MAP_SHARED, memoryFile, Interop.BCM2835_GPIO_BASE);
