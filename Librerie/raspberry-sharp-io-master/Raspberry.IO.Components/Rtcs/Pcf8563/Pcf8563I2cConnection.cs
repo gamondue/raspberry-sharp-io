@@ -36,19 +36,28 @@ namespace Raspberry.IO.Components.Rtcs.Pcf8563
         #region Methods
         
 
-        public DateTime ReadDateTime()
+        public string ReadDateAndTime()
         {
             byte[] rd = connection.Read(4); 
     //        returndata = self._bus.read_byte_data(self._addr, data)
     //#print "addr = 0x%x data = 0x%x %i returndata = 0x%x %i " % (self._addr, data, data, returndata, _bcd_to_int(returndata))
     //    return returndata 
-            return DateTime.Now; 
+            return "2014-11-04 22:24:51"; 
         }
 
         public int ReadSeconds()
         {
-            byte[] rd = connection.Read(1); // (Register.REG_SECONDS); 
-            return bcd_to_int(rd[0]) & 0x7F; 
+            byte[] rd = connection.Read(2); // (Register.REG_SECONDS); 
+
+        //            int s = Int32.Parse(d.Substring(2, 1), 
+        //    System.Globalization.NumberStyles.AllowHexSpecifier);
+        //// mette a zero il bit più significativo di questo nibble 
+        //s &= 0x7;
+        //s *= 10; 
+        //// nibble meno significativo
+        //s += Int32.Parse(d.Substring(3, 1),
+        //    System.Globalization.NumberStyles.AllowHexSpecifier)
+            return bcd_to_int(rd[0]) & 0x7F; // masks most sign digit due to 
         }
 
         public byte RawRead()

@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileGPIO.cs" />
+    <Compile Include="GPIO2.cs" />
+    <Compile Include="RaspiGpIoMain.cs" />
     <Compile Include="RTC_PCF8563.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

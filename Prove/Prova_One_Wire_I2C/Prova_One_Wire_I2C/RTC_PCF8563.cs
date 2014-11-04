@@ -4,9 +4,12 @@ using System.Threading;
 
 public class RTC_PCF8563
 {
+    // programma ispirato a: 
+    // http://bradsrpi.blogspot.it/2014/07/c-mono-code-to-read-tmp102-i2c.html
+
     private string i2cgetExe = "/usr/sbin/i2cget";
     // -y 1 = canale I2C n. 1, 0x51 = indirizzo del device, 2 = n.ro registro (secondi), b = letto a Byte
-    private string i2cgetCmdArgs = "-y 1 0x51 2 b";
+    private string comandoGenericoI2cget = "-y 1 0x51 RRR b"; // sostituiremo RRR con il registro da usare effettivamente
     private string hexString = "";
     private Process p;
 
@@ -17,7 +20,7 @@ public class RTC_PCF8563
 
     public int Seconds()
     {
-        string d = readRawDateData();
+        string d = readRawDateData(2);
         //Console.WriteLine("{0}  {1}", d.Substring(2, 1), d.Substring(3, 1));
         
         // da BCD a decimale
@@ -33,8 +36,30 @@ public class RTC_PCF8563
         return s;
     }
 
-    private string readRawDateData()
+    public int Month()
     {
+        string d = readRawDateData(7);
+
+        // da BCD a decimale
+        // nibble più significativo
+        int s = Int32.Parse(d.Substring(2, 1),
+            System.Globalization.NumberStyles.AllowHexSpecifier);
+        // il primo bit è il riporto dell'anno, lo cancelliamo comunque
+        // per l'anno sono usati solo i bit da 0 a 4. Cancelliamo tutti gli altri
+        // con un mascheramento: 
+        s &= 0x1;
+        s *= 10;
+        // nibble meno significativo
+        s += Int32.Parse(d.Substring(3, 1),
+            System.Globalization.NumberStyles.AllowHexSpecifier);
+        return s;
+    }
+
+    private string readRawDateData(int register)
+    {
+        // comando con il registro passato come paramentro
+        string i2cgetCmdArgs = comandoGenericoI2cget.Replace("RRR", register.ToString("0"));
+        //Console.WriteLine(i2cgetCmdArgs); 
         // Don't raise event when process exits
         p.EnableRaisingEvents = false;
         // We're using an executable not document, so UseShellExecute false
@@ -52,21 +77,19 @@ public class RTC_PCF8563
         // Now run i2cget & wait for it to finish
         p.Start();
         p.WaitForExit();
-        // Data returned in format 0xa017
-        // Last 2 digits are actually most significant byte (MSB)
-        // 2 digits right after 0x are really least significant byte (LSB)
+
         string data = p.StandardOutput.ReadToEnd();
         return (data);
     }
 
-    public static void Main()
+    public static void Main(string[] args)
     {
         RTC_PCF8563 t = new RTC_PCF8563();
         while (true)
         {
-            //Console.WriteLine("{0}  {1}", t.readRawDateData(), t.Seconds());
-            Console.WriteLine("{0}", t.Seconds());
-            Thread.Sleep(500);
+            //Console.WriteLine("{0}  {1}", t.readRawDateData(), t.Seconds()); 
+            Console.WriteLine("{0} s; {1} mese", t.Seconds(), t.Month()); 
+            Thread.Sleep(500); 
         }
     }
 }
