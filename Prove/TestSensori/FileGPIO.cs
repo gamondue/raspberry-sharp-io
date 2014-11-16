@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic; //required for List<>
+using System.Diagnostics;
 using System.IO;
 
 
-namespace GPIO//Avoid naming class like namespace, you can end up with calls like "new FileGPIO.FileGPIO()";
+namespace GOR.ITT.Cesena //Avoid naming class like namespace, you can end up with calls like "new FileGPIO.FileGPIO()";
 {
     // programma preso da: 
     // http://www.raspberrypi.org/forums/viewtopic.php?p=88063

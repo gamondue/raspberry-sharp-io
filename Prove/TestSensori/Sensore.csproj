@@ -7,10 +7,11 @@
     <ProjectGuid>{7E6F0B9C-0173-409B-9504-10C477F28932}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Prova_One_Wire_I2C</RootNamespace>
-    <AssemblyName>Prova_One_Wire_I2C</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>Sensore</RootNamespace>
+    <AssemblyName>Sensore</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,16 +37,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileGPIO.cs" />
     <Compile Include="GPIO2.cs" />
+    <Compile Include="MainClass.cs" />
     <Compile Include="RaspiGpIoMain.cs" />
-    <Compile Include="RTC_PCF8563.cs" />
+    <Compile Include="PCF8563_RTC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DS1822_Temp_Sensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

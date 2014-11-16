@@ -1,9 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prova_One_Wire_I2C", "Prova_One_Wire_I2C\Prova_One_Wire_I2C.csproj", "{7E6F0B9C-0173-409B-9504-10C477F28932}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sensore", "TestSensori\Sensore.csproj", "{7E6F0B9C-0173-409B-9504-10C477F28932}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
