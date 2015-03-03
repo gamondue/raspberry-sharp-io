@@ -7,7 +7,7 @@ using Raspberry.Timers;
 
 #endregion
 
-namespace Test.Gpio.DHT11
+namespace Test.Gpio.DHT22
 {
     internal class Program
     {
@@ -15,7 +15,7 @@ namespace Test.Gpio.DHT11
         {
             const ConnectorPin measurePin = ConnectorPin.P1Pin11;
 
-            Console.WriteLine("DHT-11/DHT-22 Sample: measure humidity and temperature");
+            Console.WriteLine("DHT-22 Sample: measure humidity and temperature");
             Console.WriteLine();
             Console.WriteLine("\tMeasure: {0}", measurePin);
             Console.WriteLine();

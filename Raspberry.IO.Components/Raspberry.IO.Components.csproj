@@ -121,6 +121,8 @@
     <Compile Include="Sensors\Pressure\Bmp085\Bmp085I2cConnection.cs" />
     <Compile Include="Sensors\Pressure\Bmp085\Bmp085I2cConnectionExtensionMethods.cs" />
     <Compile Include="Sensors\Pressure\Bmp085\Bmp085Precision.cs" />
+    <Compile Include="Sensors\Temperature\Dht22-Am2302\Dht22_Am2302Connection.cs" />
+    <Compile Include="Sensors\Temperature\Dht22-Am2302\Dht22_Am2302Data.cs" />
     <Compile Include="Sensors\Temperature\Dht\DhtConnection.cs" />
     <Compile Include="Sensors\Temperature\Dht\DhtData.cs" />
     <Compile Include="Sensors\Temperature\Ds18b20\Ds18b20Connection.cs" />
