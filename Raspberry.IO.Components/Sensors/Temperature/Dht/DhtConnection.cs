@@ -136,7 +136,8 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
             if ((checkSum & 0xff) != data[4])
                 return null;
 
-            var humidity = ((data[0] << 8) + data[1])/256m;
+            //var humidity = ((data[0] << 8) + data[1]) / 256m;   // DHT11
+            var humidity = ((data[0] << 8) + data[1]) * 0.1m;    // DHT22
 
             var sign = 1;
             if ((data[2] & 0x80) != 0) // negative temperature
@@ -144,7 +145,8 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                 data[2] = (byte) (data[2] & 0x7F);
                 sign = -1;
             }
-            var temperature = sign*((data[2] << 8) + data[3])/256m;
+            //var temperature = sign * ((data[2] << 8) + data[3]) / 256m; // DHT11
+            var temperature = sign*((data[2] << 8) + data[3]) * 0.1m; // DHT22
 
             return new DhtData
             {

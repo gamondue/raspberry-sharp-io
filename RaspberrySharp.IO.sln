@@ -69,7 +69,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Gpio.DHT11", "Tests\Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.1wire.DS18B20", "Tests\Test.1wire.DS18B20\Test.1wire.DS18B20.csproj", "{15428051-32A0-4B1B-9DBF-4F7B17B1E1D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Gpio.DHT22", "Tests\Test.Gpio.DHT22\Test.Gpio.DHT22.csproj", "{09AF5F31-56B8-488B-9A04-4D400543A829}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Gpio.DHTXX", "Tests\Test.Gpio.DHTXX\Test.Gpio.DHTXX.csproj", "{09AF5F31-56B8-488B-9A04-4D400543A829}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
