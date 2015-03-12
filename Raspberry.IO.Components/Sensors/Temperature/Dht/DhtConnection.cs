@@ -116,7 +116,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
             pin.Write(true);
             HighResolutionTimer.Sleep(100m);
 
-            // Measure required by host : startLowTime ms down
+            // Measure required by host : startLowTime ms down, then up
             pin.Write(false);
             HighResolutionTimer.Sleep(startLowTime);
             pin.Write(true);
@@ -175,8 +175,8 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 
             return new DhtData
             {
-                Humidity = humidity,
-                Temperature = temperature
+                RelativeHumidity = Ratio.FromPercent((double)humidity),
+                Temperature = UnitsNet.Temperature.FromDegreesCelsius((double)temperature)
             };
         }
 

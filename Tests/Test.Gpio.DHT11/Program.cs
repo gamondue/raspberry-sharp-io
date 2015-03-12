@@ -37,7 +37,7 @@ namespace Test.Gpio.DHT11
                     measurements++;
                     sumRetries += retries;
                     if (data != null)
-                        Console.WriteLine("{0:0.00}% humidity, {1:0.0}°C\n", data.Humidity, data.Temperature);
+                        Console.WriteLine("{0:0.00}% humidity, {1:0.0}°C", data.RelativeHumidity.Percent, data.Temperature.DegreesCelsius);
                     else
                     {
                         errors++;
@@ -50,7 +50,7 @@ namespace Test.Gpio.DHT11
 
                     // DHT 22: producer hints that sample period should be at least 2 seconds
                     // Test that DhtXxConnection's code enforces the specification
-                    Timer.Sleep(200); 
+                    Timer.Sleep(1000); 
                 }
             }
         }
