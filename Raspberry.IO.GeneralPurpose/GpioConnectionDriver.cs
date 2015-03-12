@@ -262,7 +262,7 @@ namespace Raspberry.IO.GeneralPurpose
         #region Private Methods
 
         private static int GetActualTimeout(decimal timeout)
-        {
+        {   // gamon ??? is this a clever trick I cannot understand or an error ???
             if (timeout > 0)
                 return (int)timeout;
             

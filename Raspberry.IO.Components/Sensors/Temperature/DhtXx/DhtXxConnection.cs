@@ -17,11 +17,9 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
     /// </remarks>
     public class DhtXxConnection : IDisposable
     {
-        #region References
-
-        private readonly IInputOutputBinaryPin pin;
+        #region fields
         private decimal startLowTime = 18m;     // [ms] 
-        private long middleTimeZeroOne = 500;   // [hundred ns] (ticks)
+        private long thresholdTimeZeroOne = 610;   // [hundred ns] (ticks) (26+70)/2 = 61 micro s
         private long errTime = 2000;            // [hundred ns] (ticks)
         private decimal timeOutDecimal = 100m;  // [ms]
         private long timeOutTicks;              // [hundred ns] (ticks)
@@ -30,7 +28,12 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 
         private long lastSampleTicks;           // ticks at last sample
 
-        const int maxRetries = 10; 
+        const int maxRetries = 10;
+        #endregion
+
+        #region References
+
+        private readonly IInputOutputBinaryPin pin;
 
         #endregion
 
@@ -69,26 +72,26 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
             DhtXxData data = null;
             var retryCount = maxRetries;
 
-            long ticksFromLastSample = DateTime.UtcNow.Ticks - lastSampleTicks;
-            //Console.Write(ticksFromLastSample.ToString() + " ");
-
-            // DHT22: wait until 2 s from last sample (requirement from productor's data sheet)
-            HighResolutionTimer.Sleep((decimal)((twoSeconds - ticksFromLastSample) / 10000)); 
-
+            retries = 0;
             while (data == null && retryCount-- > 0)
             {
+                long ticksFromLastSample = DateTime.UtcNow.Ticks - lastSampleTicks;
+                //Console.Write(ticksFromLastSample.ToString() + " ");
+
+                // DHT22: wait until 2 s from last sample (requirement from productor's data sheet)
+                HighResolutionTimer.Sleep((decimal)((twoSeconds - ticksFromLastSample) / 10000));
                 try
                 {
                     data = TryGetData();
                 }
-                catch
+                catch (Exception ex)
                 {
                     retries = maxRetries - retryCount;
-                    Console.Write("Retry: " + retries.ToString() + " "); 
+                    Console.WriteLine("Retry: " + retries.ToString() + " " + ex.Message); 
                     data = null;
                 }
+                lastSampleTicks = DateTime.UtcNow.Ticks;
             }
-            lastSampleTicks = DateTime.UtcNow.Ticks;
             return data;
         }
 
@@ -117,56 +120,79 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
             // Measure required by host : startLowTime ms down
             pin.Write(false);
             HighResolutionTimer.Sleep(startLowTime);
-            pin.Write(true); 
+            pin.Write(true);
+            HighResolutionTimer.Sleep(0.100m); // Tgo in datasheet
 
             // Prepare for reading
             pin.AsInput();
 
-            bool err = false; 
+            int cnt = 7;
+            int idx = 0;
+            var bit = -1;
+            int errCode = -1; 
+            string errString = ""; 
+            bool err = false;
             try
             {
                 // Read acknowledgement from Dht
-                if (SuccessfulWaitForLevel(true, "Ack.true TOut "))
+                errCode = 10;
+                pin.Wait(true, timeOutDecimal);
+
+                errCode = 20;
+                pin.Wait(false, timeOutDecimal);
+
+                // Read 40 bits input, or time-out
+                cnt = 7;
+                idx = 0;
+                for (bit = 0; bit < 40; bit++)
                 {
-                    if (SuccessfulWaitForLevel(false, "Ack.false TOut "))
+                    errCode = 30;
+                    pin.Wait(true, timeOutDecimal); 
+                        
+                    errCode = 40;
+                    var start = DateTime.UtcNow.Ticks;
+                    pin.Wait(false, timeOutDecimal);
+
+                    var ticksLevelOn = (DateTime.UtcNow.Ticks - start);
+                    if (ticksLevelOn > thresholdTimeZeroOne)
+                            data[idx] |= (byte)(1 << cnt); 
+                    if (cnt == 0)
                     {
-                        // Read 40 bits output, or time-out
-                        var cnt = 7;
-                        var idx = 0;
-                        for (var i = 0; i < 40; i++)
-                        {
-                            if (SuccessfulWaitForLevel(true, "Bit high receiving TOut "))
-                            { 
-                                var start = DateTime.UtcNow.Ticks;
-                                pin.Wait(false, timeOutDecimal);
-                                var ticksLevelOn = (DateTime.UtcNow.Ticks - start);
-                                if (ticksLevelOn > middleTimeZeroOne)
-                                    if (ticksLevelOn < errTime)
-                                        // add one at right position 
-                                        // (zero is already there!)
-                                        data[idx] |= (byte)(1 << cnt); 
-                                    else
-                                    {
-                                        err = true;
-                                        throw new TimeoutException("Byte " + idx + " bit " + i + " Timeout"); 
-                                    }
-                                if (cnt == 0)
-                                {
-                                    idx++;   // next byte
-                                    cnt = 7; // restart at MSB
-                                }
-                                else
-                                    cnt--;
-                            }
-                            else
-                                err = true;
-                        } // for
+                        idx++;   // next byte
+                        cnt = 7; // restart at MSB
                     }
-                    else 
-                        err = true; 
+                    else
+                        cnt--;
+                } // for
+            }
+            catch (Exception ex)
+            {
+                err = true;
+                switch (errCode)
+                {
+                    case 10:
+                        {
+                            errString = "Ack.HIGH level timeout";
+                            break;
+                        }
+                    case 20:
+                        {
+                            errString = "Ack.LOW level timeout";
+                            break;
+                        }
+                    case 30:
+                        {
+                            errString = "Byte " + idx + " bit " + bit + " Timeout receiving HIGH level";
+                            break;
+                        }
+                    case 40:
+                        {
+                            errString = "Byte " + idx + " bit " + bit + " Timeout receiving LOW level";
+                            break;
+                        }
                 }
-                else 
-                    err = true; 
+                //throw new Exception(errString + " " + ex.Message);
+                throw new Exception(errString);
             }
             finally
             {
@@ -178,11 +204,12 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                 var checkSum = data[0] + data[1] + data[2] + data[3];
                 if ((checkSum & 0xff) != data[4])
                 {
-                    throw new Exception ("DHTXX Cheksum error");
+                    throw new Exception ("DHTXX Checksum error");
                     return null;
                 }
 
-                decimal humidity = ((data[0] << 8) + data[1]) * 0.1m;
+                //var humidity = ((data[0] << 8) + data[1]) / 256m;   // DHT11
+                var humidity = ((data[0] << 8) + data[1]) * 0.1m;    // DHT22
 
                 var sign = 1;
                 if ((data[2] & 0x80) != 0) // negative temperature
@@ -190,7 +217,8 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                     data[2] = (byte)(data[2] & 0x7F);
                     sign = -1;
                 }
-                decimal temperature = sign * ((data[2] << 8) + data[3]) * 0.1m;
+                //var temperature = sign * ((data[2] << 8) + data[3]) / 256m; // DHT11
+                var temperature = sign * ((data[2] << 8) + data[3]) * 0.1m; // DHT22
 
                 return new DhtXxData
                 {
@@ -200,25 +228,6 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
             }
             else
                 return null; 
-        }
-        /// <summary>
-        /// Wait until parameter passed Digital level is reached in chip's data pin, or timeout
-        /// If timeout, notify error on console
-        /// </summary>
-        /// <param name="LevelValue">Digital level we have to wait for</param>
-        /// <param name="ErrorString"></param>
-        /// <returns></returns>
-        private bool SuccessfulWaitForLevel(bool LevelValue, string ErrorString)
-        {
-            long ticksTOut = DateTime.UtcNow.Ticks + timeOutTicks;
-            pin.Wait(LevelValue, timeOutDecimal);
-            if (DateTime.UtcNow.Ticks > ticksTOut)
-            {
-                throw new TimeoutException(ErrorString + " Timeout while waiting for pin status to be " + LevelValue); 
-                return false;
-            }
-            else
-                return true; 
         }
         #endregion
     }

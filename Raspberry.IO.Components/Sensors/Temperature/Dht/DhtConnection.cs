@@ -9,14 +9,28 @@ using Raspberry.Timers;
 namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 {
     /// <summary>
-    /// Represents a connection to a DHT-11 or DHT-22 humidity / temperature sensor.
+    /// Represents a connection to a DHT-11 or DHT-22 (also known as Am2302) humidity / temperature sensor.
     /// </summary>
     /// <remarks>
     /// Requires a fast IO connection (such as <see cref="MemoryGpioConnectionDriver"/>).
     /// Based on <see href="https://www.virtuabotix.com/virtuabotix-dht22-pinout-coding-guide/"/>.
     /// </remarks>
     public class DhtConnection : IDisposable
-    {
+    {   
+        #region fields
+        private decimal startLowTime = 18m;     // [ms] 
+        private long middleTimeZeroOne = 500;   // [hundred ns] (ticks)
+        private long errTime = 2000;            // [hundred ns] (ticks)
+        private decimal timeOutDecimal = 100m;  // [ms]
+        private long timeOutTicks;              // [hundred ns] (ticks)
+
+        private long twoSeconds = 20000000;     // [hundred ns] (ticks)
+
+        private long lastSampleTicks;           // ticks at last sample
+
+        const int maxRetries = 10;
+        #endregion
+
         #region References
 
         private readonly IInputOutputBinaryPin pin;
@@ -33,6 +47,8 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
         {
             this.pin = pin;
             pin.AsOutput();
+            timeOutTicks = (long)timeOutDecimal * 100;
+            lastSampleTicks = DateTime.UtcNow.Ticks + twoSeconds;
         }
 
         /// <summary>
@@ -50,23 +66,31 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
         /// <summary>
         /// Gets the data.
         /// </summary>
-        /// <returns>The DHT data.</returns>
-        public DhtData GetData()
+        /// <returns>The Dht data. Null if error</returns>
+        public DhtData GetData(ref int retries)
         {
             DhtData data = null;
-            var retryCount = 10;
+            var retryCount = maxRetries;
+            retries = 0;
             while (data == null && retryCount-- > 0)
             {
+                long ticksFromLastSample = DateTime.UtcNow.Ticks - lastSampleTicks;
+                //Console.Write(ticksFromLastSample.ToString() + " ");
+
+                // DHT22: wait until 2 s from last sample (requirement from productor's data sheet)
+                HighResolutionTimer.Sleep((decimal)((twoSeconds - ticksFromLastSample) / 10000));
                 try
                 {
                     data = TryGetData();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    retries = maxRetries - retryCount;
+                    Console.WriteLine("Retry: " + retries.ToString() + " " + ex.Message); 
                     data = null;
                 }
+                lastSampleTicks = DateTime.UtcNow.Ticks;
             }
-
             return data;
         }
 
@@ -92,13 +116,14 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
             pin.Write(true);
             HighResolutionTimer.Sleep(100m);
 
-            // Measure required by host : 18ms down then put to up
+            // Measure required by host : startLowTime ms down
             pin.Write(false);
-            HighResolutionTimer.Sleep(18m);
+            HighResolutionTimer.Sleep(startLowTime);
             pin.Write(true);
 
             // Prepare for reading
             pin.AsInput();
+
             try
             {
                 // Read acknowledgement from DHT

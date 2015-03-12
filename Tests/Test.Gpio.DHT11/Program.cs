@@ -25,15 +25,32 @@ namespace Test.Gpio.DHT11
             using (var pin = driver.InOut(measurePin))
             using (var DhtConnection = new DhtConnection(pin))
             {
+                int TotalRetries = 0;
+                double measurements = 0;
+                int errors = 0;
+                int sumRetries = 0; 
                 while (!Console.KeyAvailable)
                 {
-                    var data = DhtConnection.GetData();
+                    int retries = 0;
+                    var data = DhtConnection.GetData(ref retries);
+                    TotalRetries += retries;
+                    measurements++;
+                    sumRetries += retries;
                     if (data != null)
-                        Console.WriteLine("{0:0.00}% humidity, {1:0.0}°C", data.Humidity, data.Temperature);
+                        Console.WriteLine("{0:0.00}% humidity, {1:0.0}°C\n", data.Humidity, data.Temperature);
                     else
-                        Console.WriteLine("Unable to read data");
+                    {
+                        errors++;
+                        Console.WriteLine("Unable to read data\n");
+                    }
+                    Console.WriteLine("Measurements {0:0}, Errors {1}, Error rate {2:0.00}%, ",
+                        measurements, errors, errors / measurements * 100);
+                    Console.WriteLine("TotalRetries {0:0}, Retries rate {1:0.00}%, Mean retries per sample {2:0.000}\n",
+                        TotalRetries, TotalRetries / (measurements * 10) * 100, sumRetries/ measurements);
 
-                    Timer.Sleep(2000); // producer hints that sample period should be at least 2 seconds
+                    // DHT 22: producer hints that sample period should be at least 2 seconds
+                    // Test that DhtXxConnection's code enforces the specification
+                    Timer.Sleep(200); 
                 }
             }
         }
