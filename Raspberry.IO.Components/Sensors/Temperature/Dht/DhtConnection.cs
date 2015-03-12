@@ -3,6 +3,7 @@
 using System;
 using Raspberry.IO.GeneralPurpose;
 using Raspberry.Timers;
+using UnitsNet;
 
 #endregion
 

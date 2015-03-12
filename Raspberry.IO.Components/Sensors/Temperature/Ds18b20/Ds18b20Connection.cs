@@ -36,7 +36,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Ds18b20
             deviceFolder = baseDir + deviceId;
             if (!Directory.Exists(deviceFolder))
                 throw new ArgumentException(string.Format("Sensor with Id {0} not found. {1}", deviceId, ModprobeExceptionMessage), deviceId);
-            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Ds18b20Connection"/> class.
@@ -49,12 +49,11 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Ds18b20
                 throw new InvalidOperationException(string.Format("No sensors were found in {0}. {1}", baseDir, ModprobeExceptionMessage));
 
             if (deviceCount <= deviceIndex)
-                throw new IndexOutOfRangeException(string.Format("There were only {0} devices found, so index {1} is invalid", deviceCount, deviceIndex ));
+                throw new IndexOutOfRangeException(string.Format("There were only {0} devices found, so index {1} is invalid", deviceCount, deviceIndex));
 
             deviceFolder = deviceFolders[deviceIndex];
         }
-
-
+        
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
@@ -85,7 +84,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Ds18b20
                 throw new InvalidOperationException("Unable to read temperature");
 
             var temperatureString = lines[1].Substring(equalsPos + 2);
-
+            
             return UnitsNet.Temperature.FromDegreesCelsius(double.Parse(temperatureString, CultureInfo.InvariantCulture) / 1000.0);
         }
 
