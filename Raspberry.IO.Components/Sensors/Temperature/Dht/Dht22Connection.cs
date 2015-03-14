@@ -3,19 +3,21 @@
 using System;
 using Raspberry.IO.GeneralPurpose;
 using Raspberry.Timers;
+using UnitsNet;
 
 #endregion
 
 namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 {
     /// <summary>
-    /// Represents a connection to DHT-22 humidity / temperature sensor (also known as Am2302).
+    /// Represents a connection to DHT-22 humidity / temperature sensor (also known as AM2302).
     /// </summary>
     /// <remarks>
     /// Requires a fast IO connection (such as <see cref="MemoryGpioConnectionDriver"/>).
-    /// Based on <see href="https://www.virtuabotix.com/virtuabotix-dht22-pinout-coding-guide/"/>.
+    /// Based on <see href="https://www.virtuabotix.com/virtuabotix-dht22-pinout-coding-guide/"/>. 
+    /// 
     /// </remarks>
-    public class DhtXxConnection : IDisposable
+    public class Dht22Connection : IDisposable
     {
         #region fields
         private decimal startLowTime = 18m;     // [ms] 
@@ -26,7 +28,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 
         private long twoSeconds = 20000000;     // [hundred ns] (ticks)
 
-        private long lastSampleTicks;           // ticks at last sample
+        private long ticksAtLastSample;         // memorized to wait at least 2 s
 
         const int maxRetries = 10;
         #endregion
@@ -43,12 +45,12 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
         /// Initializes a new instance of the <see cref="DhtXxConnection"/> class.
         /// </summary>
         /// <param name="pin">The pin.</param>
-        public DhtXxConnection(IInputOutputBinaryPin pin)
+        public Dht22Connection(IInputOutputBinaryPin pin)
         {
             this.pin = pin;
             pin.AsOutput();
             timeOutTicks = (long)timeOutDecimal * 100;
-            lastSampleTicks = DateTime.UtcNow.Ticks + twoSeconds;
+            ticksAtLastSample = DateTime.UtcNow.Ticks + twoSeconds;
         } 
 
         /// <summary>
@@ -66,31 +68,34 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
         /// <summary>
         /// Gets the data.
         /// </summary>
-        /// <returns>The Dht data. Null if error</returns>
-        public DhtXxData GetData(ref int retries)
+        /// <param name="retries">no. of repetitions in communication, for debugging</param>
+        /// <returns>The DHT data. Null if error</returns>
+        public DhtData GetData(ref int retries) 
         {
-            DhtXxData data = null;
+            DhtData data = null;
             var retryCount = maxRetries;
 
             retries = 0;
             while (data == null && retryCount-- > 0)
             {
-                long ticksFromLastSample = DateTime.UtcNow.Ticks - lastSampleTicks;
+                long ticksFromLastSample = DateTime.UtcNow.Ticks - ticksAtLastSample;
                 //Console.Write(ticksFromLastSample.ToString() + " ");
 
-                // DHT22: wait until 2 s from last sample (requirement from productor's data sheet)
+                // DHT22: wait until 2 s from last sample (requirement from producer's data sheet) 
                 HighResolutionTimer.Sleep((decimal)((twoSeconds - ticksFromLastSample) / 10000));
+
                 try
                 {
                     data = TryGetData();
                 }
                 catch (Exception ex)
                 {
-                    retries = maxRetries - retryCount;
-                    Console.WriteLine("Retry: " + retries.ToString() + " " + ex.Message); 
+                    retries = maxRetries - retryCount - 1;
+                    // next instruction is just for test
+                    Console.WriteLine ("Tentative no. " + retries.ToString() + ". " + ex.Message); 
                     data = null;
                 }
-                lastSampleTicks = DateTime.UtcNow.Ticks;
+                ticksAtLastSample = DateTime.UtcNow.Ticks;
             }
             return data;
         }
@@ -107,7 +112,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 
         #region Private Helpers
 
-        private DhtXxData TryGetData()
+        private DhtData TryGetData()
         {
             // Prepare bugger
             byte[] data = new byte[5];
@@ -165,8 +170,9 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                         cnt--;
                 } // for
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
+                // error decode based on last errCode value
                 err = true;
                 switch (errCode)
                 {
@@ -191,7 +197,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                             break;
                         }
                 }
-                //throw new Exception(errString + " " + ex.Message);
+                //throw new Exception(errString + "\n" + ex.Message);
                 throw new Exception(errString);
             }
             finally
@@ -204,12 +210,11 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                 var checkSum = data[0] + data[1] + data[2] + data[3];
                 if ((checkSum & 0xff) != data[4])
                 {
-                    throw new Exception ("DHTXX Checksum error");
+                    throw new Exception ("DHT22 Checksum error");
                     return null;
                 }
 
-                //var humidity = ((data[0] << 8) + data[1]) / 256m;   // DHT11
-                var humidity = ((data[0] << 8) + data[1]) * 0.1m;    // DHT22
+                var humidity = ((data[0] << 8) + data[1]) * 0.1m;    // here DHT22 is different from DHT11
 
                 var sign = 1;
                 if ((data[2] & 0x80) != 0) // negative temperature
@@ -217,13 +222,12 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                     data[2] = (byte)(data[2] & 0x7F);
                     sign = -1;
                 }
-                //var temperature = sign * ((data[2] << 8) + data[3]) / 256m; // DHT11
-                var temperature = sign * ((data[2] << 8) + data[3]) * 0.1m; // DHT22
+                var temperature = sign * ((data[2] << 8) + data[3]) * 0.1m; // here DHT22 is different from DHT11
 
-                return new DhtXxData
+                return new DhtData
                 {
-                    Humidity = humidity,
-                    Temperature = temperature
+                    RelativeHumidity = Ratio.FromPercent((double)humidity),
+                    Temperature = UnitsNet.Temperature.FromDegreesCelsius((double)temperature)
                 };
             }
             else
