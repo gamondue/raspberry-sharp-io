@@ -13,7 +13,7 @@ namespace Test.Gpio.DHT11
     {
         private static void Main()
         {
-            const ConnectorPin measurePin = ConnectorPin.P1Pin11;
+            const ConnectorPin measurePin = ConnectorPin.P1Pin7;
 
             Console.WriteLine("DHT-11/DHT-22 Sample: measure humidity and temperature");
             Console.WriteLine();
@@ -29,7 +29,8 @@ namespace Test.Gpio.DHT11
                 {
                     var data = DhtConnection.GetData();
                     if (data != null)
-                        Console.WriteLine("{0:0.00}% humidity, {1:0.0}°C", data.RelativeHumidity.Percent, data.Temperature.DegreesCelsius);
+                        Console.WriteLine("{0}: {1:0.00}% humidity, {2:0.0}°C", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                            data.RelativeHumidity.Percent, data.Temperature.DegreesCelsius);
                     else
                         Console.WriteLine("Unable to read data");
 

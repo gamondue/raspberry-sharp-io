@@ -82,7 +82,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
                 //Console.Write(ticksFromLastSample.ToString() + " ");
 
                 // DHT22: wait until 2 s from last sample (requirement from producer's data sheet) 
-                HighResolutionTimer.Sleep((decimal)((twoSeconds - ticksFromLastSample) / 10000));
+                ////HighResolutionTimer.Sleep((decimal)((twoSeconds - ticksFromLastSample) / 10000));
 
                 try
                 {

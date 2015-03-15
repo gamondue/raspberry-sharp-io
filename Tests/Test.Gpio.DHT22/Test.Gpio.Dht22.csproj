@@ -7,8 +7,8 @@
     <ProjectGuid>{63356B6E-47A0-44E8-8B98-456E8579DCD2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Test.Gpio.Dht22</RootNamespace>
-    <AssemblyName>Test.Gpio.Dht22</AssemblyName>
+    <RootNamespace>Test.Gpio.DHT22</RootNamespace>
+    <AssemblyName>Test.Gpio.DHT22</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
