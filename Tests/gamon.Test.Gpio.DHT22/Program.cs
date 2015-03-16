@@ -31,22 +31,21 @@ namespace Test.Gpio.DHT22
                 int sumRetries = 0; 
                 while (!Console.KeyAvailable)
                 {
-                    int retries = 0;
                     DhtData data = null; 
                     try { 
-                        data = DhtConnection.GetData(ref retries);
-                        Console.WriteLine("Retries {0}", retries); 
+                        data = DhtConnection.GetData();
+
                     } catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message); 
                     }
-                    TotalRetries += retries;
+                    TotalRetries += data.AttemptCount - 1;
                     measurements++;
-                    sumRetries += retries;
+                    sumRetries += data.AttemptCount -1;
                     if (data != null)
-                        Console.WriteLine("{0}: Readings: {1:0.00}% humidity, {2:0.0}°C", 
+                        Console.WriteLine("{0}: Readings: {1:0.00}% humidity, {2:0.0}°C, Attempts {3}", 
                             DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), data.RelativeHumidity.Percent, 
-                            data.Temperature.DegreesCelsius);
+                            data.Temperature.DegreesCelsius, data.AttemptCount);
                     else
                     {
                         errors++;
