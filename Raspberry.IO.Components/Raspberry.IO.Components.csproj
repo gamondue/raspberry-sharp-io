@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C50DA799-EE29-4845-988F-03DEF82A8EF2}</ProjectGuid>
+    <ProjectGuid>{8388CFCA-E3DB-43F7-B049-2CB195211CE8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Raspberry.IO.Components</RootNamespace>

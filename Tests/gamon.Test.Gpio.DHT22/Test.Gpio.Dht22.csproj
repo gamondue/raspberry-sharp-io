@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{63356B6E-47A0-44E8-8B98-456E8579DCD2}</ProjectGuid>
+    <ProjectGuid>{7D5EB011-2EC3-4679-BDE1-BE6ABF810480}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Test.Gpio.DHT22</RootNamespace>

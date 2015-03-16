@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A567DCDC-EBE2-472F-A652-678CF13908EF}</ProjectGuid>
+    <ProjectGuid>{689CB6C4-3D23-45DA-8E00-87C28AEA32D0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Raspberry.IO.Interop</RootNamespace>

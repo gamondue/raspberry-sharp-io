@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{ACE64F17-87E5-43E7-97A0-BDDE19059C61}</ProjectGuid>
-    <ProjectGuid>{E13E88B3-4411-4D0F-8B95-29A8417D4E5B}</ProjectGuid>
+    <ProjectGuid>{ACE64F17-87E5-43E7-97A0-BDDE19059C61}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Raspberry.IO</RootNamespace>

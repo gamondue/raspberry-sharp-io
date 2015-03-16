@@ -81,22 +81,6 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 
         #endregion
 
-        #region Properties
-
-        /// <summary>
-        /// Gets or sets the sampling interval.
-        /// </summary>
-        /// <value>
-        /// The sampling interval.
-        /// </value>
-        public TimeSpan SamplingInterval
-        {
-            get { return samplingInterval != TimeSpan.Zero ? samplingInterval : DefaultSamplingInterval; }
-            set { samplingInterval = value; }
-        }
-
-        #endregion
-
         #region Method
 
         /// <summary>
