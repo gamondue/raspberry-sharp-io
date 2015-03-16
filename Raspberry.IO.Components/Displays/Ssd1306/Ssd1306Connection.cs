@@ -155,8 +155,9 @@ namespace Raspberry.IO.Components.Displays.Ssd1306
         public void DrawImage(byte[] image)
         {
             var data = new byte[image.Length + 1];
-            data [0] = 0x40;
+            data[0] = 0x40;
             Array.Copy(image, 0, data, 1, image.Length);
+
             DrawStride(data);
         }
 

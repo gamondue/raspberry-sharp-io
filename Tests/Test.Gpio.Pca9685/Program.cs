@@ -90,23 +90,23 @@ namespace Test.Gpio.PCA9685
         private static Pca9685Options ParseOptions(IEnumerable<string> arguments)
         {
             var options = new Pca9685Options
-                {
-                    SdaPin = ConnectorPin.P1Pin03,
-                    SclPin = ConnectorPin.P1Pin05,
-                    DeviceAddress = 0x40,
+            {
+                SdaPin = ConnectorPin.P1Pin03,
+                SclPin = ConnectorPin.P1Pin05,
+                DeviceAddress = 0x40,
                 PwmFrequency = Frequency.FromHertz(60),
-                    PwmOn = 150,
-                    PwmOff = 600
-                };
+                PwmOn = 150,
+                PwmOff = 600
+            };
 
             var optionSet = new OptionSet
-                {
-                    {"c|Channel=", v => options.Channel = (PwmChannel) Enum.Parse(typeof (PwmChannel), v)},
+            {
+                {"c|Channel=", v => options.Channel = (PwmChannel) Enum.Parse(typeof (PwmChannel), v)},
                 {"f|PwmFrequency=", v => options.PwmFrequency = Frequency.FromHertz(int.Parse(v))},
-                    {"b|PwmOn=", v => options.PwmOn = int.Parse(v)},
-                    {"e|PwmOff=", v => options.PwmOff = int.Parse(v)},
-                    {"h|?:", v => options.ShowHelp = true}
-                };
+                {"b|PwmOn=", v => options.PwmOn = int.Parse(v)},
+                {"e|PwmOff=", v => options.PwmOff = int.Parse(v)},
+                {"h|?:", v => options.ShowHelp = true}
+            };
 
             optionSet.Parse(arguments);
 

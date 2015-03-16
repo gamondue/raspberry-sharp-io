@@ -27,7 +27,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
         
         private DateTime previousRead;
         private bool started;
-        
+
         private static readonly TimeSpan timeout = TimeSpan.FromMilliseconds(100);
         private static readonly TimeSpan bitSetUptime = new TimeSpan(10 * (26 +70) / 2); // 26µs for "0", 70µs for "1"
 
@@ -61,6 +61,22 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
         public void Dispose()
         {
             Close();
+        }
+        
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the sampling interval.
+        /// </summary>
+        /// <value>
+        /// The sampling interval.
+        /// </value>
+        public TimeSpan SamplingInterval
+        {
+            get { return samplingInterval != TimeSpan.Zero ? samplingInterval : DefaultSamplingInterval; }
+            set { samplingInterval = value; }
         }
 
         #endregion
@@ -196,12 +212,12 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
 
                     // Determine whether bit is "1" or "0"
                     if (DateTime.UtcNow - start > bitSetUptime)
-                        data[idx] |= (byte) (1 << cnt);
+                        data[idx] |= (byte)(1 << cnt);
 
                     if (cnt == 0)
                     {
-                        idx++; // next byte
-                        cnt = 7; // restart at MSB
+                        idx++;      // next byte
+                        cnt = 7;    // restart at MSB
                     }
                     else
                         cnt--;
@@ -221,7 +237,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
             var sign = 1;
             if ((data[2] & 0x80) != 0) // negative temperature
             {
-                data[2] = (byte) (data[2] & 0x7F);
+                data[2] = (byte)(data[2] & 0x7F);
                 sign = -1;
             }
 

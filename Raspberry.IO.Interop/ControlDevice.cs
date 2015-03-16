@@ -8,7 +8,7 @@ namespace Raspberry.IO.Interop
     /// </summary>
     public class ControlDevice : IControlDevice
     {
-
+       
         #region Fields
         /// <summary>
         /// Device file used for communication
@@ -76,6 +76,7 @@ namespace Raspberry.IO.Interop
         #endregion
 
         #region Methods
+
         /// <summary>
         /// The function manipulates the underlying device parameters of special files. In particular, many operating characteristics of character special files (e.g. terminals) may be controlled with ioctl requests.
         /// </summary>

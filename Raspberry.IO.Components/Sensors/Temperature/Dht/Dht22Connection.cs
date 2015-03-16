@@ -1,4 +1,4 @@
-﻿#region References
+#region References
 
 using System;
 using UnitsNet;
@@ -28,21 +28,21 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Dht
         protected override TimeSpan DefaultSamplingInterval
         {
             get { return TimeSpan.FromSeconds(2); }
-            }
+        }
 
         protected override TimeSpan WakeupInterval
-                {
+        {
             get { return TimeSpan.FromMilliseconds(1); }
-            }
+        }
 
         protected override DhtData GetDhtData(int temperatureValue, int humidityValue)
         {
-                return new DhtData
-                {
+            return new DhtData
+            {
                 RelativeHumidity = Ratio.FromPercent(humidityValue/10d),
                 Temperature = UnitsNet.Temperature.FromDegreesCelsius(temperatureValue/10d)
-                };
-            }
+            };
+        }
 
         #endregion
     }
