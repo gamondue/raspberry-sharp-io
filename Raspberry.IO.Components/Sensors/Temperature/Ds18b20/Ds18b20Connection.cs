@@ -43,7 +43,7 @@ namespace Raspberry.IO.Components.Sensors.Temperature.Ds18b20
         /// </summary>
         public Ds18b20Connection(int deviceIndex)
         {
-            var deviceFolders = Directory.GetDirectories(baseDir, "28*").ToList();
+            var deviceFolders = Directory.GetDirectories(baseDir, "2*").ToList();
             var deviceCount = deviceFolders.Count();
             if (deviceCount == 0)
                 throw new InvalidOperationException(string.Format("No sensors were found in {0}. {1}", baseDir, ModprobeExceptionMessage));

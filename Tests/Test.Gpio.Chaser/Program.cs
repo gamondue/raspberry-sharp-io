@@ -12,13 +12,13 @@ namespace Test.Gpio.Chaser
     {
         static void Main(string[] args)
         {
-            const ConnectorPin led1Pin = ConnectorPin.P1Pin26;
-            const ConnectorPin led2Pin = ConnectorPin.P1Pin24;
-            const ConnectorPin led3Pin = ConnectorPin.P1Pin22;
-            const ConnectorPin led4Pin = ConnectorPin.P1Pin15;
-            const ConnectorPin led5Pin = ConnectorPin.P1Pin13;
-            const ConnectorPin led6Pin = ConnectorPin.P1Pin11;
-            const ConnectorPin buttonPin = ConnectorPin.P1Pin03;
+            const ConnectorPin led1Pin = ConnectorPin.P1Pin22;
+            const ConnectorPin led2Pin = ConnectorPin.P1Pin32;
+            const ConnectorPin led3Pin = ConnectorPin.P1Pin29;
+            const ConnectorPin led4Pin = ConnectorPin.P1Pin31;
+            const ConnectorPin led5Pin = ConnectorPin.P1Pin33;
+            const ConnectorPin led6Pin = ConnectorPin.P1Pin35;
+            const ConnectorPin buttonPin = ConnectorPin.P1Pin40;
             
             Console.WriteLine("Chaser Sample: Sample a LED chaser with a switch to change behavior");
             Console.WriteLine();
