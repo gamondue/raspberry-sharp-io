@@ -9,6 +9,8 @@ using Raspberry.IO.InterIntegratedCircuit;
 
 namespace Test.Gpio.Ds1302
 {
+    // DS1302: Trickle-Charge Timekeeping Chip
+
     // !!!! MONTI. TUTTO DA FARE !!!!
     /// </summary>
     class Program
