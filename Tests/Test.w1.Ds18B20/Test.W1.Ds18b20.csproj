@@ -40,7 +40,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UnitsNet">
-      <HintPath>..\..\packages\UnitsNet.3.10.0\lib\net451\UnitsNet.dll</HintPath>
+      <HintPath>..\..\packages\UnitsNet.3.34.0\lib\net35\UnitsNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

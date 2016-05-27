@@ -123,6 +123,12 @@
     <Compile Include="Expanders\Pcf8574\Pcf8574Pin.cs" />
     <Compile Include="Expanders\Pcf8574\Pcf8574PinExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rtcs\Ds1302\Ds1302I2cConnection.cs" />
+    <Compile Include="Rtcs\Ds1302\Ds1302InputBinaryPin.cs" />
+    <Compile Include="Rtcs\Ds1302\Ds1302OutputBinaryPin.cs" />
+    <Compile Include="Rtcs\Ds1302\Ds1302Pin.cs" />
+    <Compile Include="Rtcs\Ds1302\Ds1302PinExtensionMethods.cs" />
+    <Compile Include="Rtcs\Pcf8563\Pcf8563I2cConnection.cs" />
     <Compile Include="Sensors\Distance\HcSr04\HcSr04Connection.cs" />
     <Compile Include="Sensors\Distance\HcSr04\Units.cs" />
     <Compile Include="Sensors\Pressure\Bmp085\Bmp085Data.cs" />
@@ -191,8 +197,5 @@
   -->
   <ItemGroup />
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="Controllers\HT16K33\" />
-    <Folder Include="Leds\BiColor24Bargraph\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

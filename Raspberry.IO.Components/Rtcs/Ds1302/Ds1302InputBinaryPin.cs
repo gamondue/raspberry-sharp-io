@@ -53,6 +53,11 @@ namespace Raspberry.IO.Components.Rtcs.Ds1302
             return connection.GetPinStatus(pin);
         }
 
+        public void Wait(bool waitForUp = true, TimeSpan timeout = default(TimeSpan))
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Waits for the specified pin to be in the specified state.
         /// </summary>
