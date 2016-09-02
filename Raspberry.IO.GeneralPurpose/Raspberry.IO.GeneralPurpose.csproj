@@ -33,6 +33,10 @@
     <DocumentationFile>bin\Release\Raspberry.IO.GeneralPurpose.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Raspberry.System, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Raspberry.System.2.1\lib\net40\Raspberry.System.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -81,6 +85,16 @@
     <Compile Include="PinStatusEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SwitchInputPinConfiguration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Raspberry.IO.Interop\Raspberry.IO.Interop.csproj">
+      <Project>{689CB6C4-3D23-45DA-8E00-87C28AEA32D0}</Project>
+      <Name>Raspberry.IO.Interop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Raspberry.IO\Raspberry.IO.csproj">
+      <Project>{ACE64F17-87E5-43E7-97A0-BDDE19059C61}</Project>
+      <Name>Raspberry.IO</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

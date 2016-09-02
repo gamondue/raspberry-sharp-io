@@ -95,11 +95,11 @@ namespace Raspberry.IO.InterIntegratedCircuit
             // Set all the I2C/BSC1 pins back to original values if changed
             if (wasSdaPinSet)
             {
-            SetPinMode((uint) (int) sdaPin, Interop.BCM2835_GPIO_FSEL_INPT); // SDA
+                SetPinMode((uint)(int)sdaPin, Interop.BCM2835_GPIO_FSEL_INPT); // SDA
             }
             if (wasSclPinSet)
             {
-            SetPinMode((uint) (int) sclPin, Interop.BCM2835_GPIO_FSEL_INPT); // SCL
+                SetPinMode((uint)(int)sclPin, Interop.BCM2835_GPIO_FSEL_INPT); // SCL
             }
 
             Interop.munmap(gpioAddress, Interop.BCM2835_BLOCK_SIZE);
@@ -396,7 +396,7 @@ namespace Raspberry.IO.InterIntegratedCircuit
             if (existing != value)
             {
                 //Console.WriteLine($"existing is {x} masked:{x & mask} vs mask:{mask} value:{value}");
-            WriteUInt32Mask(paddr, value, mask);
+                WriteUInt32Mask(paddr, value, mask);
                 return true;
             }
             else
